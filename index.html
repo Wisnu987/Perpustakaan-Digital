@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://rntjeqcmamlzqpmmcmxi.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self';" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Smart Library — SMP Negeri 1 Dramaga</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <div class="app-shell">
+        <!-- ==================== SIDEBAR KIRI (DESKTOP) ==================== -->
+        <aside class="app-sidebar" aria-label="Navigasi Perpustakaan">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <line x1="9" y1="7" x2="16" y2="7"></line>
+                        <line x1="9" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">SMPN 1 Dramaga</span>
+                    <span class="brand-sub">Smart Library • 11 Tabel 3NF</span>
+                </div>
+            </div>
+
+            <nav class="rail-nav" aria-label="Navigasi Utama">
+                <button type="button" class="nav-tab" data-tab="circulation">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                    <span class="nav-label">Sirkulasi</span>
+                </button>
+                <button type="button" class="nav-tab active" data-tab="catalog" aria-current="page">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span class="nav-label">Katalog &amp; Inventaris</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="members">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span class="nav-label">Anggota &amp; Staf</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="fines">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                    <span class="nav-label">Sanksi &amp; Denda</span>
+                    <span class="nav-badge hidden" id="nav-fines-badge">0</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="reports">
+                    <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    <span class="nav-label">Mission Objectives</span>
+                </button>
+            </nav>
+
+            <div class="rail-footer">
+                <div class="db-pill" id="db-status-pill" title="Status Koneksi Supabase PostgreSQL">
+                    <span class="db-dot" id="db-status-dot"></span>
+                    <span class="mono" id="db-status-text">Menghubungkan...</span>
+                </div>
+                <button type="button" class="account-btn" id="btn-open-login">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span class="account-btn-text" id="auth-role-label">Mode Tamu • Login</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ==================== KOLOM WORKSPACE UTAMA ==================== -->
+        <div class="workspace-col">
+            <header class="workspace-topbar">
+                <div class="topbar-left">
+                    <div class="topbar-mobile-brand">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <span>Smart Library SMPN 1 Dramaga</span>
+                    </div>
+                    <span class="topbar-context" id="topbar-context">Katalog Buku, Kategori &amp; Inventaris</span>
+                </div>
+
+                <div class="topbar-actions">
+                    <button type="button" class="btn btn-sm btn-soft-blue mobile-login-btn" id="btn-open-login-mobile">
+                        <span id="auth-role-label-mobile">Login</span>
+                    </button>
+                    <button type="button" class="icon-btn" id="theme-toggle-btn" title="Ganti Mode Terang / Gelap" aria-label="Ganti Tema">
+                        <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        <svg id="theme-icon-sun" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </button>
+                </div>
+            </header>
+
+            <main class="app-main">
+                <!-- Banner Peringatan jika schema.sql belum dijalankan di Supabase -->
+                <div id="schema-setup-banner" class="notice-box notice-danger hidden u-mb-lg">
+                    <div class="schema-banner-row">
+                        <div>
+                            <strong>Skema 11 Tabel Belum Terpasang di Supabase</strong>
+                            <div class="schema-banner-desc">
+                                Buka <strong>SQL Editor</strong> di dashboard Supabase project Anda, lalu jalankan isi file <code>database/schema.sql</code> sekali saja untuk membuat 11 tabel, view, trigger, dan data contoh.
+                            </div>
+                        </div>
+                        <div class="header-btn-group">
+                            <button type="button" class="btn btn-sm" id="btn-copy-schema-sql">Salin SQL</button>
+                            <button type="button" class="btn btn-sm btn-primary" id="btn-recheck-schema">Cek Ulang Koneksi</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banner Info Peran Aktif -->
+                <div id="role-info-banner" class="notice-box hidden"></div>
+
+                <!-- ==================== TAB 1: SIRKULASI ==================== -->
+                <section id="view-circulation" class="view-section">
+                    <div class="page-head">
+                        <div>
+                            <h1 class="page-title">Sirkulasi Peminjaman &amp; Pengembalian</h1>
+                            <p class="page-desc">Pencatatan transaksi <code>peminjaman</code>, <code>pengembalian</code>, <code>detail_pengembalian</code>, serta sanksi keterlambatan.</p>
+                        </div>
+                        <div class="segmented-control" role="tablist" aria-label="Sub-tab Sirkulasi">
+                            <button type="button" class="segmented-btn active" data-circ-subtab="LOANS">Daftar Peminjaman</button>
+                            <button type="button" class="segmented-btn" data-circ-subtab="RETURNS">Riwayat Pengembalian</button>
+                        </div>
+                    </div>
+
+                    <div class="ledger-ribbon" aria-label="Ringkasan Sirkulasi">
+                        <div class="ledger-cell">
+                            <div class="ledger-label">Katalog &amp; Eksemplar</div>
+                            <div class="ledger-value mono" id="stat-total-eksemplar">0</div>
+                            <div class="ledger-sub" id="stat-total-judul">0 judul • 0 tersedia</div>
+                            <progress class="stock-progress" id="stat-stock-progress" max="100" value="0" aria-label="Rasio ketersediaan eksemplar"></progress>
+                        </div>
+                        <div class="ledger-cell">
+                            <div class="ledger-label">Eksemplar Dipinjam</div>
+                            <div class="ledger-value mono" id="stat-dipinjam-eksemplar">0</div>
+                            <div class="ledger-sub">Status inventaris = Dipinjam</div>
+                        </div>
+                        <div class="ledger-cell">
+                            <div class="ledger-label">Peminjaman Aktif / Telat</div>
+                            <div class="ledger-value mono" id="stat-peminjaman-aktif">0</div>
+                            <div class="ledger-sub is-danger" id="stat-peminjaman-telat">0 melewati jatuh tempo</div>
+                        </div>
+                        <div class="ledger-cell">
+                            <div class="ledger-label">Denda Belum Lunas</div>
+                            <div class="ledger-value mono is-danger" id="stat-denda-belum">0</div>
+                            <div class="ledger-sub" id="stat-denda-nominal">Total Rp 0</div>
+                        </div>
+                    </div>
+
+                    <!-- Proteksi Mode Tamu untuk PII Sirkulasi -->
+                    <div id="circ-guest-lock" class="restricted-state hidden">
+                        <div class="restricted-head">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <h2 class="restricted-title">Riwayat Peminjaman Dilindungi</h2>
+                        </div>
+                        <p class="restricted-desc">Daftar peminjaman memuat identitas siswa dan guru. Masuk sebagai Staf untuk memproses sirkulasi atau sebagai Anggota untuk memantau pinjaman pribadi.</p>
+                        <button type="button" class="btn btn-primary" data-action="open-login">Login Staf / Anggota</button>
+                    </div>
+
+                    <!-- Panel Form Transaksi (Hanya muncul untuk Staf yang Login) -->
+                    <div id="staff-circulation-forms" class="grid-2 hidden u-mb-lg">
+                        <div class="card">
+                            <div class="card-title">
+                                <h2 class="card-heading">Catat Peminjaman Baru</h2>
+                                <span class="badge badge-blue mono" id="next-loan-id-badge">PJ---</span>
+                            </div>
+                            <form id="form-new-loan">
+                                <div class="form-grid-2">
+                                    <div class="field-group">
+                                        <label class="field-label" for="loan-id-input">ID Peminjaman</label>
+                                        <input type="text" id="loan-id-input" class="input mono" required maxlength="10" />
+                                    </div>
+                                    <div class="field-group">
+                                        <label class="field-label" for="loan-member-select">Anggota Peminjam</label>
+                                        <select id="loan-member-select" class="select" required></select>
+                                    </div>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="field-group">
+                                        <label class="field-label" for="loan-tgl-pinjam">Tanggal Pinjam</label>
+                                        <input type="date" id="loan-tgl-pinjam" class="input mono" required />
+                                    </div>
+                                    <div class="field-group">
+                                        <label class="field-label" for="loan-tgl-tempo">Tanggal Jatuh Tempo</label>
+                                        <input type="date" id="loan-tgl-tempo" class="input mono" required />
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span class="field-label">Pilih Eksemplar Tersedia (Inventaris → Dipinjam)</span>
+                                    <div id="loan-available-copies-list" class="copy-checklist"></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary u-full">Simpan Transaksi Peminjaman</button>
+                            </form>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">
+                                <h2 class="card-heading">Proses Pengembalian &amp; Denda</h2>
+                                <span class="badge badge-ok mono" id="next-return-id-badge">PG---</span>
+                            </div>
+                            <form id="form-new-return">
+                                <div class="form-grid-2">
+                                    <div class="field-group">
+                                        <label class="field-label" for="return-id-input">ID Pengembalian</label>
+                                        <input type="text" id="return-id-input" class="input mono" required maxlength="10" />
+                                    </div>
+                                    <div class="field-group">
+                                        <label class="field-label" for="return-loan-select">Transaksi Peminjaman Aktif</label>
+                                        <select id="return-loan-select" class="select" required></select>
+                                    </div>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="field-group">
+                                        <label class="field-label" for="return-tgl-kembali">Tanggal Kembali</label>
+                                        <input type="date" id="return-tgl-kembali" class="input mono" required />
+                                    </div>
+                                    <div class="field-group">
+                                        <label class="field-label" for="return-hari-terlambat">Hari Terlambat (Otomatis)</label>
+                                        <input type="number" id="return-hari-terlambat" class="input mono" min="0" value="0" required />
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <span class="field-label">Eksemplar yang Dikembalikan (→ <code>detail_pengembalian</code>)</span>
+                                    <div id="return-borrowed-copies-list" class="copy-checklist"></div>
+                                </div>
+                                <div class="panel-section">
+                                    <label class="copy-check-label u-bold">
+                                        <input type="checkbox" id="return-apply-fine-chk" />
+                                        <span>Catat Sanksi / Denda (<code>sanksi_denda</code>)</span>
+                                    </label>
+                                    <div id="return-fine-fields" class="hidden u-mt-sm">
+                                        <div class="form-grid-2">
+                                            <input type="text" id="return-denda-id" class="input mono" placeholder="ID Denda (D006)" maxlength="10" aria-label="ID Denda" />
+                                            <input type="number" id="return-denda-jumlah" class="input mono" min="0" step="500" value="0" placeholder="Nominal Rp" aria-label="Nominal Denda" />
+                                        </div>
+                                        <input type="text" id="return-denda-jenis" class="input u-mt-sm" placeholder="Jenis Sanksi (misal: Keterlambatan 3 Hari)" maxlength="30" aria-label="Jenis Sanksi" />
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary u-full">Selesaikan Pengembalian</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Sub-tab Daftar Peminjaman -->
+                    <div id="circ-loans-wrap">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <div class="segmented-control">
+                                    <button type="button" class="segmented-btn active" data-loan-filter="AKTIF">Aktif / Terlambat</button>
+                                    <button type="button" class="segmented-btn" data-loan-filter="Selesai">Selesai</button>
+                                    <button type="button" class="segmented-btn" data-loan-filter="ALL">Semua</button>
+                                </div>
+                                <div class="search-input-wrap">
+                                    <input type="text" id="circ-search-input" class="input" placeholder="Cari ID peminjaman atau nama anggota..." aria-label="Cari peminjaman" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sheet">
+                            <div class="table-wrap">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID Pinjam</th>
+                                            <th>Peminjam</th>
+                                            <th>Tgl Pinjam</th>
+                                            <th>Jatuh Tempo</th>
+                                            <th>Petugas</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="circ-loans-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-tab Riwayat Pengembalian -->
+                    <div id="circ-returns-wrap" class="hidden">
+                        <div class="sheet">
+                            <div class="table-wrap">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID Kembali</th>
+                                            <th>ID Pinjam &amp; Anggota</th>
+                                            <th>Tgl Kembali</th>
+                                            <th>Terlambat</th>
+                                            <th>Detail Eksemplar Buku</th>
+                                            <th>Sanksi / Denda</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="circ-returns-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== TAB 2: KATALOG & INVENTARIS ==================== -->
+                <section id="view-catalog" class="view-section active">
+                    <div class="page-head">
+                        <div>
+                            <h1 class="page-title">Katalog Buku, Kategori &amp; Inventaris</h1>
+                            <p class="page-desc">Penelusuran publik OPAC serta pengelolaan <code>kategori_buku</code>, <code>katalog_buku</code>, dan eksemplar fisik <code>inventaris</code>.</p>
+                        </div>
+                        <div id="staff-catalog-actions" class="hidden header-btn-group">
+                            <button type="button" class="btn" id="btn-open-categories">Kelola Kategori Buku</button>
+                            <button type="button" class="btn btn-primary" id="btn-open-add-katalog">+ Tambah Judul Buku</button>
+                        </div>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-input-wrap">
+                                <input type="text" id="catalog-search-input" class="input" placeholder="Cari judul, ISBN, penerbit, atau ID buku..." aria-label="Cari katalog buku" />
+                            </div>
+                            <select id="catalog-kategori-filter" class="select select-auto" aria-label="Filter kategori">
+                                <option value="ALL">Semua Kategori</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sheet">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID Buku</th>
+                                        <th>Judul &amp; ISBN</th>
+                                        <th>Penerbit / Tahun</th>
+                                        <th>Kategori &amp; Rak</th>
+                                        <th>Stok (Tersedia / Total)</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="catalog-tbody">
+                                    <tr>
+                                        <td><span class="skeleton-bar"></span></td>
+                                        <td><span class="skeleton-bar"></span></td>
+                                        <td><span class="skeleton-bar"></span></td>
+                                        <td><span class="skeleton-bar"></span></td>
+                                        <td><span class="skeleton-bar"></span></td>
+                                        <td><span class="skeleton-bar"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== TAB 3: ANGGOTA & STAF ==================== -->
+                <section id="view-members" class="view-section">
+                    <div class="page-head">
+                        <div>
+                            <h1 class="page-title">Keanggotaan &amp; Struktur Staf</h1>
+                            <p class="page-desc">Spesialisasi Disjoint <code>anggota</code> (<code>siswa</code> / <code>guru_karyawan</code>) serta hierarki supervisi rekursif <code>staf</code>.</p>
+                        </div>
+                        <div id="staff-member-actions" class="hidden header-btn-group">
+                            <button type="button" class="btn btn-primary" id="btn-open-add-member">+ Tambah Anggota</button>
+                            <button type="button" class="btn hidden" id="btn-open-add-staf">+ Tambah Staf</button>
+                        </div>
+                    </div>
+
+                    <div id="members-guest-lock" class="restricted-state hidden">
+                        <div class="restricted-head">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <h2 class="restricted-title">Data Pribadi Anggota Terlindungi</h2>
+                        </div>
+                        <p class="restricted-desc">Daftar NISN, NIP, nomor telepon, dan alamat anggota hanya ditampilkan kepada Staf atau akun Anggota pemilik data.</p>
+                        <button type="button" class="btn btn-primary" data-action="open-login">Login Staf / Anggota</button>
+                    </div>
+
+                    <div id="members-toolbar" class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="segmented-control">
+                                <button type="button" class="segmented-btn active" data-member-subtab="ANGGOTA">Data Anggota</button>
+                                <button type="button" class="segmented-btn" id="member-subtab-staf" data-member-subtab="STAF">Struktur Staf</button>
+                            </div>
+                            <select id="member-type-filter" class="select select-auto" aria-label="Filter jenis anggota">
+                                <option value="ALL">Semua Tipe</option>
+                                <option value="Siswa">Siswa</option>
+                                <option value="Guru/Karyawan">Guru / Karyawan</option>
+                            </select>
+                            <div class="search-input-wrap">
+                                <input type="text" id="member-search-input" class="input" placeholder="Cari nama, ID, NISN, atau NIP..." aria-label="Cari anggota" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="members-table-wrap" class="sheet">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID Anggota</th>
+                                        <th>Nama &amp; Kontak</th>
+                                        <th>Tipe (Disjoint)</th>
+                                        <th>NISN / NIP</th>
+                                        <th>Kelas / Unit Kerja</th>
+                                        <th>Tgl Gabung</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="members-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="staf-table-wrap" class="sheet hidden">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID Staf</th>
+                                        <th>Jabatan</th>
+                                        <th>Username</th>
+                                        <th>Supervisor (Rekursif)</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staf-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== TAB 4: SANKSI & DENDA ==================== -->
+                <section id="view-fines" class="view-section">
+                    <div class="page-head">
+                        <div>
+                            <h1 class="page-title">Rekapitulasi Sanksi &amp; Denda</h1>
+                            <p class="page-desc">Pengelolaan tabel <code>sanksi_denda</code> beserta status pembayaran <code>Lunas</code> dan <code>Belum Lunas</code>.</p>
+                        </div>
+                    </div>
+
+                    <div id="fines-guest-lock" class="restricted-state hidden">
+                        <div class="restricted-head">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                            <h2 class="restricted-title">Catatan Sanksi &amp; Denda Terbatas</h2>
+                        </div>
+                        <p class="restricted-desc">Silakan masuk sebagai Staf Perpustakaan atau Anggota untuk meninjau rincian denda keterlambatan dan pelunasan.</p>
+                        <button type="button" class="btn btn-primary" data-action="open-login">Login Staf / Anggota</button>
+                    </div>
+
+                    <div id="fines-toolbar" class="toolbar">
+                        <div class="segmented-control">
+                            <button type="button" class="segmented-btn active" data-fine-filter="ALL">Semua</button>
+                            <button type="button" class="segmented-btn" data-fine-filter="Belum Lunas">Belum Lunas</button>
+                            <button type="button" class="segmented-btn" data-fine-filter="Lunas">Lunas</button>
+                        </div>
+                        <div class="mono fines-summary" id="fines-summary-text"></div>
+                    </div>
+
+                    <div id="fines-table-wrap" class="sheet">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID Denda</th>
+                                        <th>Anggota</th>
+                                        <th>Ref. Pinjam / Kembali</th>
+                                        <th>Jenis Sanksi</th>
+                                        <th>Jumlah Denda</th>
+                                        <th>Status &amp; Tgl Bayar</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fines-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== TAB 5: MISSION OBJECTIVES & LAPORAN ==================== -->
+                <section id="view-reports" class="view-section">
+                    <div class="page-head">
+                        <div>
+                            <h1 class="page-title">SQL Mission Objectives &amp; Laporan</h1>
+                            <p class="page-desc">Uji 5 kueri <em>Mission Objectives</em> Fase 3 langsung terhadap PostgreSQL Supabase beserta statistik 11 tabel relasional.</p>
+                        </div>
+                    </div>
+
+                    <div class="card u-mb-lg">
+                        <div class="card-title">
+                            <h2 class="card-heading">5 Query SQL Mission Objectives (Interaktif)</h2>
+                        </div>
+
+                        <div class="mo-list">
+                            <div class="mo-item">
+                                <label class="mo-item-title field-label" for="mo1-input">1. Cari Anggota berdasarkan NISN / NIP atau Nama</label>
+                                <div class="input-row">
+                                    <input type="text" id="mo1-input" class="input" value="Rina" placeholder="NISN, NIP, atau Nama (misal: 0081234567 atau Rina)" />
+                                    <button type="button" class="btn btn-primary btn-sm" id="btn-run-mo1">Jalankan</button>
+                                </div>
+                            </div>
+
+                            <div class="mo-item">
+                                <label class="mo-item-title field-label" for="mo2-input">2. Cari Buku berdasarkan Judul, Penerbit, atau ISBN</label>
+                                <div class="input-row">
+                                    <input type="text" id="mo2-input" class="input" value="Laskar Pelangi" placeholder="Judul, Penerbit, atau ISBN" />
+                                    <button type="button" class="btn btn-primary btn-sm" id="btn-run-mo2">Jalankan</button>
+                                </div>
+                            </div>
+
+                            <div class="mo-item">
+                                <div class="form-grid-2">
+                                    <div>
+                                        <label class="mo-item-title field-label" for="mo3-input">3. Peminjaman Aktif berdasarkan Tanggal Pinjam</label>
+                                        <div class="input-row">
+                                            <input type="date" id="mo3-input" class="input mono" value="2026-11-10" />
+                                            <button type="button" class="btn btn-primary btn-sm" id="btn-run-mo3">Jalankan</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="mo-item-title field-label" for="mo4-input">4. Peminjaman Aktif berdasarkan Identitas Anggota</label>
+                                        <div class="input-row">
+                                            <input type="text" id="mo4-input" class="input" value="A001" placeholder="ID Anggota atau Nama (misal: A001)" />
+                                            <button type="button" class="btn btn-primary btn-sm" id="btn-run-mo4">Jalankan</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mo-item mo-item-row">
+                                <div>
+                                    <div class="mo-item-title">5. Riwayat Denda yang Belum Diselesaikan</div>
+                                    <div class="mo-item-desc">Menampilkan catatan <code>sanksi_denda</code> dengan status <code>Belum Lunas</code>.</div>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn-run-mo5">Jalankan Query 5</button>
+                            </div>
+                        </div>
+
+                        <div id="mo-result-box" class="mo-result hidden">
+                            <div class="mo-result-head">
+                                <strong id="mo-result-title">Hasil Query</strong>
+                                <span class="mono mo-result-meta" id="mo-result-meta"></span>
+                            </div>
+                            <pre id="mo-sql-preview" class="mono sql-preview"></pre>
+                            <div id="mo-result-table" class="table-wrap"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-title">
+                                <h2 class="card-heading">Peringkat Buku Sering Dipinjam &amp; Kas Denda</h2>
+                                <button type="button" class="btn btn-sm" id="btn-refresh-reports">Muat Ulang</button>
+                            </div>
+                            <div id="report-kas-summary" class="notice-box"></div>
+                            <div id="report-top-books"></div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">
+                                <h2 class="card-heading">Statistik 11 Tabel Relasional (Supabase)</h2>
+                            </div>
+                            <div id="report-table-counts" class="mono count-list"></div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- ==================== NAVIGASI BAWAH KHUSUS HP ==================== -->
+    <nav class="mobile-nav" aria-label="Navigasi HP">
+        <button type="button" class="mobile-nav-btn" data-tab="circulation">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+            <span>Sirkulasi</span>
+        </button>
+        <button type="button" class="mobile-nav-btn active" data-tab="catalog" aria-current="page">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <span>Katalog</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-tab="members">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            <span>Anggota</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-tab="fines">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            <span>Denda</span>
+            <span class="mobile-badge hidden" id="mobile-fines-badge">0</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-tab="reports">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <span>Laporan</span>
+        </button>
+    </nav>
+
+    <!-- ==================== SLIDE-OVER DRAWER ==================== -->
+    <div id="detail-drawer" class="drawer-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+        <div class="drawer-panel">
+            <div class="drawer-header">
+                <div>
+                    <h2 class="drawer-title" id="drawer-title">Detail</h2>
+                    <div class="drawer-subtitle" id="drawer-subtitle"></div>
+                </div>
+                <button type="button" class="icon-btn" id="btn-close-drawer" aria-label="Tutup Panel">&times;</button>
+            </div>
+            <div class="drawer-body" id="drawer-body"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DINAMIS ==================== -->
+    <div id="app-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Judul Modal</h2>
+                <button type="button" class="icon-btn" id="btn-close-modal" aria-label="Tutup">&times;</button>
+            </div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.1/dist/umd/supabase.min.js"
+        integrity="sha384-rONULF7BcIpU+mBrW9/e9DhAVbCUwcewd5ivsb4/z3qqi1anKKkZ+KZpFRHHM3pG"
+        crossorigin="anonymous"
+    ></script>
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
