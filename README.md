@@ -21,7 +21,7 @@ Lihat skrip lengkap pada [database/schema.sql](database/schema.sql):
 ## Cara Menjalankan
 
 1. Buka **SQL Editor** pada dashboard project Supabase Anda (`Perpustakaan Digital`), lalu jalankan seluruh isi [database/schema.sql](database/schema.sql) satu kali.
-2. Buka [index.html](index.html) di browser (disarankan melalui local server seperti VS Code Live Server).
+2. Jalankan PHP server dari folder root proyek (misal `php -S localhost:8000` atau letakkan folder proyek di `htdocs` XAMPP/Laragon), lalu buka `http://localhost:8000/` ([index.php](index.php)).
 3. Login menggunakan akun demo:
    - **Kepala Perpustakaan:** username `kepala_perpus`, password `dramaga2026`
    - **Staf Sirkulasi:** username `sirkulasi_1`, password `dramaga2026`
@@ -29,5 +29,5 @@ Lihat skrip lengkap pada [database/schema.sql](database/schema.sql):
 
 ## Keamanan & Hardening Basis Data
 
-- **Frontend Security**: Halaman [index.html](index.html) menerapkan Content Security Policy (CSP) tanpa inline script/style, pin versi `@supabase/supabase-js@2.119.1` dengan Subresource Integrity (`SHA-384`), sanitasi filter PostgREST, delegasi event tanpa `onclick`, serta perlindungan data pribadi anggota (PII) pada Mode Tamu.
+- **Frontend Security**: Halaman [index.php](index.php) menerapkan Content Security Policy (CSP) tanpa inline script/style, pin versi `@supabase/supabase-js@2.119.1` dengan Subresource Integrity (`SHA-384`), sanitasi filter PostgREST, delegasi event tanpa `onclick`, serta perlindungan data pribadi anggota (PII) pada Mode Tamu.
 - **Database Hardening (`database/schema_hardened.sql`)**: Untuk mengaktifkan RLS ketat di Supabase (menutup akses baca/tulis langsung `anon` ke tabel anggota/transaksi, memindahkan sesi staf ke skema non-exposed `private.staf_sessions`, serta memakai RPC transaksi atomik), jalankan [database/schema_hardened.sql](database/schema_hardened.sql) di SQL Editor Supabase setelah [database/schema.sql](database/schema.sql).

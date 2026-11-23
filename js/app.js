@@ -1727,7 +1727,7 @@ function bindEvents() {
 
     $('btn-copy-schema-sql').onclick = async () => {
         try {
-            const res = await fetch('database/schema.sql');
+            const res = await fetch(document.body.dataset.schemaUrl || 'database/schema.sql');
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const sqlText = await res.text();
             await navigator.clipboard.writeText(sqlText);
