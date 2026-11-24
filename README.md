@@ -20,14 +20,21 @@ Lihat skrip lengkap pada [database/schema.sql](database/schema.sql):
 
 ## Cara Menjalankan
 
-1. Buka **SQL Editor** pada dashboard project Supabase Anda (`Perpustakaan Digital`), lalu jalankan seluruh isi [database/schema.sql](database/schema.sql) satu kali.
-2. Jalankan PHP server dari folder root proyek (misal `php -S localhost:8000` atau letakkan folder proyek di `htdocs` XAMPP/Laragon), lalu buka `http://localhost:8000/` ([index.php](index.php)).
-3. Login menggunakan akun demo:
-   - **Kepala Perpustakaan:** username `kepala_perpus`, password `dramaga2026`
-   - **Staf Sirkulasi:** username `sirkulasi_1`, password `dramaga2026`
-   - **Mode Anggota (Query-Only):** masukkan `A001` (Rina Putri — Siswa) atau `A006` (Drs. Hendra Wijaya — Guru)
+1. Buka **SQL Editor** pada dashboard project Supabase Anda (`Perpustakaan Digital`), lalu jalankan seluruh isi [database/schema.sql](database/schema.sql) satu kali (atau jalankan [database/schema_hardened.sql](database/schema_hardened.sql) jika skema lama sudah terpasang).
+2. Setel password akun staf awal melalui SQL Editor Supabase (password awal dibuat acak agar tidak ada kredensial bawaan di repository):
+   ```sql
+   UPDATE public.staf
+   SET password_hash = 'GantiPasswordAmanMin8Karakter'
+   WHERE username = 'kepala_perpus';
+   ```
+3. Pilih salah satu dari 2 versi UI/UX yang tersedia:
+   - **Versi HTML/JS:** buka [index.html](index.html) di browser (disarankan melalui local server seperti VS Code Live Server).
+   - **Versi PHP:** jalankan PHP server dari folder root proyek (misal `php -S localhost:8000` atau letakkan folder proyek di `htdocs` XAMPP/Laragon), lalu buka `http://localhost:8000/php/` ([php/index.php](php/index.php)).
+4. Login:
+   - **Staf:** gunakan `username` (misal `kepala_perpus`) dan password yang telah Anda atur di SQL Editor.
+   - **Anggota:** masukkan pasangan **ID Anggota** dan **NISN (10 digit)** atau **NIP (18 digit)**.
 
 ## Keamanan & Hardening Basis Data
 
-- **Frontend Security**: Halaman [index.php](index.php) menerapkan Content Security Policy (CSP) tanpa inline script/style, pin versi `@supabase/supabase-js@2.119.1` dengan Subresource Integrity (`SHA-384`), sanitasi filter PostgREST, delegasi event tanpa `onclick`, serta perlindungan data pribadi anggota (PII) pada Mode Tamu.
-- **Database Hardening (`database/schema_hardened.sql`)**: Untuk mengaktifkan RLS ketat di Supabase (menutup akses baca/tulis langsung `anon` ke tabel anggota/transaksi, memindahkan sesi staf ke skema non-exposed `private.staf_sessions`, serta memakai RPC transaksi atomik), jalankan [database/schema_hardened.sql](database/schema_hardened.sql) di SQL Editor Supabase setelah [database/schema.sql](database/schema.sql).
+- **Frontend Security**: Halaman [index.html](index.html) menerapkan Content Security Policy (CSP) tanpa inline script/style, pin versi `@supabase/supabase-js@2.119.1` dengan Subresource Integrity (`SHA-384`), sanitasi filter PostgREST, delegasi event tanpa `onclick`, serta perlindungan data pribadi anggota (PII) pada Mode Tamu.
+- **Database Hardening (`database/schema.sql` & `database/schema_hardened.sql`)**: RLS ketat aktif secara bawaan—role `anon`/`authenticated` hanya dapat membaca katalog OPAC publik (`kategori_buku`, `katalog_buku`, `inventaris`, `v_katalog_stok`). Seluruh pembacaan PII, transaksi, dan mutasi melewati RPC `SECURITY DEFINER` dengan validasi token sesi server-side (SHA-256) pada skema non-exposed `private.staf_sessions` dan `private.anggota_sessions`.
